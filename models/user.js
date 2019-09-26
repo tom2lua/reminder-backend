@@ -8,9 +8,13 @@ const userSchema = mongoose.Schema({
     minlength: 6
   },
   passwordHash: String,
-  name: String,
+  firstName: String,
+  lastName: String,
   birthday: Date,
-  email: String,
+  email: {
+    type: String,
+    unique: true
+  },
   settings: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Settings'
