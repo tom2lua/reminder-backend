@@ -9,6 +9,7 @@ const logger = require('./utils/logger')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const eventsRouter = require('./controllers/events')
+const eventTypesRouter = require('./controllers/eventTypes')
 
 logger.info('Connecting to ', config.MONGODB_URI)
 
@@ -36,6 +37,7 @@ app.use(middleware.tokenExtractor)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/events', eventsRouter)
+app.use('/api/eventTypes', eventTypesRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
