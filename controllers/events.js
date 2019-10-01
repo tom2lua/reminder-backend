@@ -2,10 +2,33 @@ const jwt = require('jsonwebtoken')
 const eventsRouter = require('express').Router()
 const Event = require('../models/event')
 const User = require('../models/user')
+const helperFunctions = require('../utils/helper_functions')
 
+//Fetch all events:
+// eventsRouter.get('/', async (request, response, next) => {
+//   try {
+//     const events = await Event.find({})
+//     response.json(events)
+//   } catch (error) {
+//     next(error)
+//   }
+// })
+
+//Fetch events from user:
 eventsRouter.get('/', async (request, response, next) => {
+  const token = helperFunctions.getTokenFrom(request)
+
   try {
-    const events = await Event.find({})
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+
+    if (!token || !decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const events = await Event.find({ user: decodedToken.id }).populate(
+      'eventType',
+      { name: 1, iconClass: 1, representColor: 1 }
+    )
     response.json(events)
   } catch (error) {
     next(error)
@@ -23,12 +46,13 @@ eventsRouter.post('/', async (request, response, next) => {
 
     const eventObject = {
       name: request.body.name,
-      date: request.body.Date ? request.body.Date : Date.now(),
+      date: request.body.date,
       description: request.body.description,
       location: request.body.location,
       startTime: request.body.startTime ? request.body.startTime : '',
       endTime: request.body.endTime ? request.body.endTime : '',
       repeatOption: request.body.repeatOption,
+      eventType: request.body.eventTypeId,
       user: user._id
     }
 

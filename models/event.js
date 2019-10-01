@@ -33,6 +33,10 @@ const eventSchema = mongoose.Schema({
   repeatOption: {
     type: String,
     default: 'No Repeat'
+  },
+  eventType: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'EventType'
   }
 })
 
