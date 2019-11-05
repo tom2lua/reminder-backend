@@ -2,7 +2,9 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
+const helperFunctions = require('../utils/helper_functions')
 
+//Fetch all Users
 usersRouter.get('/', async (request, response) => {
   const users = await User.find({}).populate('events', {
     firstName: 1,
@@ -18,6 +20,7 @@ usersRouter.get('/', async (request, response) => {
   response.json(users.map(user => user.toJSON()))
 })
 
+//Create new User
 usersRouter.post('/', async (request, response, next) => {
   const { username, password, email } = request.body
   try {
@@ -43,6 +46,38 @@ usersRouter.post('/', async (request, response, next) => {
     next(exception)
   }
 })
+//Edit User:
+usersRouter.put('/', async (request, response, next) => {
+  const token = helperFunctions.getTokenFrom(request)
+
+  try {
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+
+    if (!token || !decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+    const userObject = {
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
+      birthday: request.body.birthday,
+      email: request.body.email
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      decodedToken.id,
+      userObject,
+      {
+        new: true,
+        runValidators: true,
+        context: 'query'
+      }
+    )
+
+    response.json(updatedUser)
+  } catch (error) {
+    next(error)
+  }
+})
+
 //Fetch one:
 usersRouter.post('/username', async (request, response, next) => {
   try {

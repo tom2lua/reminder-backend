@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const eventTypeSchema = mongoose.Schema({
   name: String,
   iconClass: String,
-  representColor: String
+  representColor: String,
+  cssClass: String
 })
 
 eventTypeSchema.set('toJSON', {
