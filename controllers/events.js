@@ -77,6 +77,11 @@ eventsRouter.put('/:id', async (request, response, next) => {
     repeatOption: request.body.repeatOption,
     eventType: request.body.eventType.id
   }
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if (!request.token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
   try {
     const updatedEvent = await Event.findByIdAndUpdate(
       request.params.id,

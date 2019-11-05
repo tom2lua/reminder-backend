@@ -10,6 +10,7 @@ const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const eventsRouter = require('./controllers/events')
 const eventTypesRouter = require('./controllers/eventTypes')
+const settingsRouter = require('./controllers/settings')
 
 logger.info('Connecting to ', config.MONGODB_URI)
 
@@ -25,6 +26,7 @@ mongoose
     logger.error('Error connecting to MongDB:', error.message)
   })
 mongoose.set('useCreateIndex', true)
+mongoose.set('useFindAndModify', false)
 
 //Middlewares usage:
 app.use(cors())
@@ -38,6 +40,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/events', eventsRouter)
 app.use('/api/eventTypes', eventTypesRouter)
+app.use('/api/settings', settingsRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

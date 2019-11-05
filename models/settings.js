@@ -5,9 +5,17 @@ const settingsSchema = mongoose.Schema({
     type: Boolean,
     default: false
   },
-  startDayOfWeek: {
+  firstDayOfWeek: {
     type: String,
     default: 'Monday'
+  },
+  is12HourFormat: {
+    type: Boolean,
+    default: true
+  },
+  isNotiEnabled: {
+    type: Boolean,
+    default: false
   }
 })
 
