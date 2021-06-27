@@ -11,18 +11,19 @@ const loginRouter = require('./controllers/login')
 const eventsRouter = require('./controllers/events')
 const eventTypesRouter = require('./controllers/eventTypes')
 const settingsRouter = require('./controllers/settings')
+const miscRouter = require('./controllers/misc')
 
 logger.info('Connecting to ', config.MONGODB_URI)
 
 mongoose
   .connect(config.MONGODB_URI, {
     useUnifiedTopology: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
   })
   .then(() => {
     logger.info('Connected to MongoDB')
   })
-  .catch(error => {
+  .catch((error) => {
     logger.error('Error connecting to MongDB:', error.message)
   })
 mongoose.set('useCreateIndex', true)
@@ -41,6 +42,7 @@ app.use('/api/login', loginRouter)
 app.use('/api/events', eventsRouter)
 app.use('/api/eventTypes', eventTypesRouter)
 app.use('/api/settings', settingsRouter)
+app.use('/api/misc', miscRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
